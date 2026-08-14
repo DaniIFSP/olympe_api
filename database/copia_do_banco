@@ -1,0 +1,76 @@
+create database bdolympe;
+use bdolympe;
+
+create table tb_usuarios (
+	cod int primary key auto_increment,
+    nome varchar(90) not null,
+    idade int,
+    email varchar(90) UNIQUE not null,
+    telefone varchar(15) not null,
+    senha varchar(255) not null,
+    tipo varchar(15)
+);
+
+create table tb_instituicoes (
+	cod int primary key auto_increment,
+    nome varchar(90),
+    imagem varchar(255),
+    descricao varchar (300)
+);
+
+create table tb_enderecos_instituicao (
+	cod INT PRIMARY KEY AUTO_INCREMENT,
+    cod_inst INT NOT NULL,
+    telefone VARCHAR(15),
+    cep VARCHAR(8),
+    logradouro VARCHAR(90),
+    numero VARCHAR(10),
+    complemento VARCHAR(90),
+    bairro VARCHAR(90),
+    cidade VARCHAR(90),
+    uf CHAR(2),
+    latitude DECIMAL(10,8),
+    longitude DECIMAL(11,8),
+    dia_semana VARCHAR(30),
+    horario_inicio TIME,
+    horario_fim TIME,
+    
+	FOREIGN KEY (cod_inst)
+	REFERENCES tb_instituicoes(cod)
+    ON DELETE CASCADE
+);
+
+create table tb_denuncias (
+	cod int primary key auto_increment,
+    cod_usuario int, 
+    latitude decimal(11,8) not null,
+    longitude decimal(11,8) not null, 
+    tipo varchar(50) not null, 
+    descricao varchar(300),
+    data_denuncia datetime default current_timestamp,
+    status varchar(20) default 'Pendente',
+    
+    foreign key (cod_usuario) references tb_usuarios(cod)
+    ON DELETE SET NULL 
+);
+
+create table tb_pontos_risco (
+	cod int primary key auto_increment, 
+    latitude decimal(11,8),
+    longitude decimal(11,8),
+    tipo varchar (90),
+    descricao varchar (300),
+    nivel_risco varchar (10),
+    data_denuncia date
+);
+
+create table tb_contatos (
+	cod int primary key auto_increment,
+    cod_usuario int not null,
+    nome varchar(90) not null,
+    telefone varchar(15) not null,
+    parentesco varchar(30),
+    
+    foreign key (cod_usuario)
+    references tb_usuarios(cod)
+);

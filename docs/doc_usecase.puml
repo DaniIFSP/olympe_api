@@ -1,0 +1,67 @@
+@startuml doc
+
+left to right direction
+
+actor Cliente as cli
+actor Administrador as admin
+
+usecase "Cadastrar-se" as UC1
+usecase "Autenticar-se" as UC2
+usecase "Lembrar Senha" as UC3
+usecase "Ativar Usuário" as UC4
+usecase "Cadastro de Usuários" as UC5
+usecase "Excluir Usuários" as UC6
+usecase "Alterar Usuário" as UC7
+
+usecase "Listar Instituições" as UC8
+usecase "Cadastrar Instituição" as UC9
+usecase "Alterar Instituição" as UC10
+usecase "Excluir Instituição" as UC11
+
+usecase "Cadastrar Contato de Emergência" as UC12
+usecase "Excluir Contato de Emergência" as UC13
+usecase "Alterar Contato de Emergência" as UC14
+
+usecase "Cadastrar Ponto de Risco" as UC15
+usecase "Excluir Ponto de Risco" as UC16
+usecase "Alterar Ponto de Risco" as UC17
+
+usecase "Cadastrar Denúncia" as UC18
+usecase "Excluir Denúncia" as UC19
+usecase "Alterar Denúncia" as UC20
+usecase "Listar Denúncias" as UC21
+usecase "Alterar Status da Denúncia" as UC22
+usecase "Listar Minhas Denúncias" as UC23
+
+cli -- UC1
+cli -- UC2
+cli -- UC3
+cli -- UC4
+cli -- UC7
+cli -- UC8
+cli -- UC12
+cli -- UC13
+cli -- UC14
+cli -- UC18
+cli -- UC19
+cli -- UC20
+cli -- UC23
+
+admin -- UC1
+admin -- UC2
+admin -- UC3
+admin -- UC4
+admin -- UC5
+admin -- UC6
+admin -- UC7
+admin -- UC8
+admin -- UC9
+admin -- UC10
+admin -- UC11
+admin -- UC15
+admin -- UC16
+admin -- UC17
+admin -- UC21
+admin -- UC22
+
+@enduml
