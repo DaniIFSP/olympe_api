@@ -100,14 +100,12 @@ Route::middleware('auth:sanctum')->group(function() {
 
 
 
-/*Route::get('/teste-banco', function(){
-    $instituicoes = DB::table('tb_instituicoes')->get();
+Route::get('/teste-banco', function(){
 
     return response()->json([
-        'conexao'=> 'ok',
-        'instituicoes'=> $instituicoes
+        'conexao'=> 'ok'
     ]);
-});*/
+});
 
 
 
