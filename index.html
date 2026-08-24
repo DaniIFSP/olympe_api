@@ -9,16 +9,107 @@
 </head>
 <body>
     <div id="inicio">
+    <div id="cabecalho">
+            <p style="font-size: 1.5rem;">Olympe for safe</p>
+            <div id="menu">
+            <a href="#sobre">Quem somos</a>
+            <a href="#aplicativo">Aplicativo</a>
+            <a href="#mapeamento">Mapeamento</a>
+            <a href="#encomendar">Encomendar</a>
+            </div>
+        </div>
         
-       <div id="textos">
-        <h1>O app de segurança</h1> 
-        <br/> <h1>feminina</h1>
+       <div id="principal">
+        <h1 style="margin-top: 15%;">O app de segurança
+        <br/>feminina</h1>
         <p>Olympe for safe, a tecnologia em prol da mobilidade urbana segura </p>
         <div id="botao">
-        <a href="#" style="background-color: #462160;">Descobrir</a>
+        <a href="#app" style="background-color: #462160;">Descobrir</a>
         </div>
        </div>
     </div>
+    <div id="conteudo">
+        <section id="sobre" style="padding-bottom: 10%;">
+          <div>
+            <h2 class="titulo">Quem somos</h2>
+            <h3 class="titulo", style="font-size: 6rem; padding-bottom: 0;">Olympe <br/>for safe.</h3>
+            <div id="corpo-texto">
+            <p class="texto">O Olympe nasceu nos corredores do IFSP - Campus Guarulhos,
+            em 2024, como um Projeto Integrador do curso de Informática. 
+            Movidas pelo desejo de usar a tecnologia para solucionar um 
+            problema real e urgente da nossa sociedade, voltamos nosso 
+            olhar para a mobilidade urbana feminina e os perigos que as 
+            mulheres enfrentam diariamente ao se deslocarem pelas cidades.
+            </p><br/>
+            <p class="texto">Acreditamos que pensar em mobilidade urbana segura é, acima 
+                de tudo, pensar em bem-estar e liberdade. Para garantir que 
+                as mulheres possam caminhar sem medo, desenvolvemos o aplicativo 
+                <strong>Olympe for Safe</strong> integrado a um dispositivo inteligente. 
+                Nossa solução cria uma rede de proteção ágil, capaz de conectar a usuária 
+                às autoridades em questão de segundos em situações de risco.
+            </p>
+            </div>
+          </div>
+            <img src="img/logo.png" alt="Logo do Sistema Olympe for safe.">
+        </section>
 
+        <h2 id="app" class="titulo" style="padding-bottom: 0;">Aplicativo</h2>
+        
+        <section id="aplicativo"> 
+            <div id="tela1">
+                <p class="texto" style="width: 40%; text-align: center;">Cadastre 
+                até 3 contatos de confiança para compartilhar a localização e pedir socorro</p>
+                <img src="img/app1.png" alt="Tela de contatos do aplicativo Olympe, demonstração de 3 contatos: Mãe, Pai, Amigo, Polícia">
+            </div>
+            <div id="tela2" style="margin-left: -11%;">
+                <p class="texto">Escolha o caminho mais seguro</p>
+                <img src="img/elementos.png" alt="Elementos de segurança do app">
+                <img src="img/app2.png" alt="Tela inicial do aplicativo com mapa interativo">
+            </div>
+            <div id="tela3">
+                <p class="texto" style="text-align: center;padding-bottom: 15%;">Catálogo de instituições de apoio</p>
+                <img src="img/app3.png" alt="Tela do catálogo de instituições do app">
+            </div>
+        </section>
+
+        <h2 class="titulo" style="padding-bottom: 0;">Encomendar</h2>
+
+        <section id="encomendar">  
+            <img src="img/dispositivo.png" style="margin-left: 5%;" alt="Imagem do dispositivo físico - botão de emergência em formato de gota com coração no meio.">
+            <div id="dispositivo">
+                <h3 class="titulo", style="font-size: 6rem; padding: 0; text-align: right;">Nosso dispositivo<br/>inteligente.</h3>
+                <p class="texto" style="width: 40%; justify-self: flex-end; padding: 5%; padding-right: 0;">O <strong>chaveiro Olympe</strong> é o nosso botão de emergência escondido, com apenas um clique você se comunica 
+                diretamente com o 180 e sua ocorrência é registrada.</p>
+                <div id="botao" style="justify-self: flex-end;">
+                <a href="#" style="background-color: #462160; font-size: 1.5rem;">Encomede o seu</a>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+
+    <div id="mapeamento">
+        <h4>Ajude no mapeamento do app!</h4>
+        <div id="formulario">
+        <form action="#" method="post">
+            <input type="text" placeholder="Nome completo">
+            <input type="email" placeholder="Email">
+            <textarea style="height: 35vh;"
+            name="denuncia-form" 
+            id="denuncia-form" 
+            placeholder="Faça sua denúncia"></textarea>
+        </form>
+        </div>
+    </div>
+
+    <footer>
+        <h5>Olympe for safe</h5>
+        <div id="contato">
+            <h5>Contato</h6>
+            <p>@olympeforsafe</p>
+            <p>olympeforsafe@gmail.com</p>
+        </div>
+        <h5>Tecnologia em apoio a <br/> mudança!</h5>
+    </footer>
 </body>
 </html>

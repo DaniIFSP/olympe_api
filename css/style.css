@@ -1,24 +1,35 @@
 *{
     margin: 0;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 #inicio{
-    width: 100vw;
     height: 100vh;
     background-image: url(../img/inicio.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
-#inicio, h1{
+#cabecalho{
+    display: flex;
+    justify-content: space-between;
+}
+#cabecalho, a{
+    color: #F7F1FC;
+    text-decoration: none;
+    font-size: 1.5rem;
+    padding: 1%;
+}
+#menu{ 
+    width: 40%;
+}
+#principal, h1{
     display: flex;
     color: #fafafa;
     font-size: 5rem;
     justify-content: center;
-    align-items: center;
-}
-#inicio, p{
-    font-size: 1.5rem;
+    flex-direction: column;
     text-align: center;
+    align-items: center;
 }
 #botao{
     background-color: #462160;
@@ -36,4 +47,91 @@
     text-decoration: none;
     color: #fafafa;
     display: inline-block;
+}
+#conteudo{
+    padding: 3%;
+    background-color: #F7F1FC;
+}
+.titulo{
+    color: #462160;
+    font-size: 2rem;
+    padding: 2%;
+}
+.texto{
+    color: #462160;
+    font-size: 1.25rem;
+    text-align: justify;
+}
+#corpo-texto{
+    padding: 3%;
+    padding-right: 0;
+    width: 45vw;
+}
+#sobre{
+    display: flex;
+    align-items: center;
+    gap: 10%;
+}
+#conteudo img{
+    padding-top: 4%;
+}
+#aplicativo{
+    padding: 5%;
+    display: flex;
+    justify-content: space-around;
+}
+#encomendar{
+    display: flex;
+    align-items: center;
+}
+#dispositivo{
+    padding: 5%;
+}
+#mapeamento{
+    height: 100vh;
+    background-image: url(../img/final.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+h4{
+    padding: 3%;
+    display: flex;
+    color: #fafafa;
+    font-size: 5rem;
+    justify-content: center;
+    align-items: center;
+}
+form{
+    background-color: #F7F1FC;
+    padding: 5%;
+    width: 40vw;
+    height: 60vh;
+    border-radius: 5%;
+}
+input, textarea{
+    width: 100%;
+    padding: 2%;
+    margin: 3% 0;
+    border: solid 2px #a790bb;
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+#formulario{
+    justify-self: center;
+}
+footer{
+    padding: 2%;
+    background-color: #2D004D;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+#contato, p{
+    color: #F7F1FC;
+    font-size: 1rem;
+}
+h5{
+    color: #F7F1FC;
+    font-size: 1.5rem;
 }
