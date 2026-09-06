@@ -3,10 +3,13 @@
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
 }
+html {
+  scroll-behavior: smooth;
+}
 body{
     background-color: #f7f1fc;
 }
-h1, h2, h3, p {
+h1, h2, h3, h4, h5, p {
     color: #320e3b;
 }
 h1 {
@@ -17,6 +20,20 @@ h1 {
 a {
     text-decoration: none;
     color: #320e3b;
+}
+h4 {
+    padding-left: 5%;
+    text-align: left;
+    font-size: 1.25rem;
+}
+h5 {
+    font-size: 1.25rem;
+    position: relative;
+    z-index: 4;
+    padding-left: 5%;
+}
+p {
+    font-size: 1.25rem;
 }
 
 /*SEÇÃO INÍCIO*/ 
@@ -49,10 +66,10 @@ a {
     padding-left: 8%;
     background-image: url(../img/onda_detalhe.png);
     background-repeat: no-repeat;
-    background-size: 20vw 70vh;
+    background-size: 20vw 75vh;
     background-position: 0 25vh;
     position: relative;
-    height: 75vh;
+    height: 85vh;
 }
 
 #layout1 {
@@ -68,7 +85,7 @@ a {
 #layout2 {
     background-color: #8f1eae;
     width: 40vw;
-    height: 90vh;
+    height: 105vh;
     right: 0vw;
     top: -20vh;
     z-index: 2;
@@ -86,8 +103,8 @@ a {
     z-index: 3;
     position: absolute;
     display: flex;
-    right: 10vw;
-    top: -10vh;
+    right: 12vw;
+    width: 30%;
 }
 #layout3 {
     position: absolute;
@@ -96,7 +113,7 @@ a {
     height: 20vh;
     background-color: #f7f1fc;
     border-radius: 100vw;
-    top: 35vh;
+    top: 25vh;
     right: 35vw;
     display: flex;
     flex-direction: column;
@@ -107,4 +124,79 @@ a {
     text-align: center;
 }
 
-/*SEÇÃO PROJETO*/
+/*SEÇÃO SOBRE*/
+
+#sobre {
+    position: relative;
+    z-index: 4;
+    top: -45vh;
+    background-color: #f7f1fc;
+    width: 85vw;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    border-radius: 5vw;
+    border: #320e3b solid 1px;
+    background-image: url(../img/sobre_fundo.png);
+    background-size: cover;
+}
+#conteudo_sobre p {
+    width: 50%;
+    text-align: justify;
+    padding: 5%;
+}
+#conteudo_sobre img {
+    width: 30vw;
+    position: absolute;
+    right: 5vw;
+    top: 10vh;
+}
+.telas {
+    width: 70vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    justify-self: center;
+}
+.telas img {
+    width: 15vw;
+    padding-top: 5%;
+}
+.telas p {
+    text-align: center;
+    padding-top: 5%;
+}
+#tela1 {
+    padding-top: 5%;
+}
+h5 {
+    text-align: center;
+    padding: 10%;
+}
+#tela2 {
+    padding-left: 5%;
+}
+#tela3 {
+    padding-right: 5%;
+}
+#conteudo_dispositivo {
+    display: flex;
+    justify-content: space-evenly;
+}
+#texto_dispositivo {
+    width: 30vw;
+    text-align: justify;
+    padding-top: 10%;
+}
+footer {
+    background-color: #4d065f;
+    height: 15vh;
+    margin-top: -40vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+h6, footer p{
+    font-size: 1rem;
+    color: #dabef2;
+}
