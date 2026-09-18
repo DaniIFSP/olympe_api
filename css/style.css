@@ -200,3 +200,22 @@ h6, footer p{
     font-size: 1rem;
     color: #dabef2;
 }
+
+
+/*TELA OLYMPE*/
+
+#olympe-conteudo {
+    position: relative;
+    z-index: 1;
+    width: 85vw;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+    border-radius: 5vw;
+    border: #320e3b solid 1px;
+}
+#olympe-conteudo p {
+    width: 80%;
+    text-align: justify;
+}

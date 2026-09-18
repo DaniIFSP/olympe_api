@@ -9,10 +9,15 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PontoRiscoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VerificacaoTelefoneController;
+use App\Http\Controllers\RotaController;
 
 
 
 //ROTAS PÚBLICAS (de acesso do cliente)
+
+//GERAÇÃO DE ROTAS
+
+Route::post('/rotas', [RotaController::class, 'calcular']);
 
 //VERIFICAÇÃO - TELEFONE
 

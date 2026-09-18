@@ -36,8 +36,7 @@ return [
     ],
 
 
-    'sms_fake' => [
-    'enabled' => env('SMS_FAKE_ENABLED', false),
-    'code' => env('SMS_FAKE_CODE', '123456'),
+    'google' => [
+        'routes_api_key' => env('GOOGLE_ROUTES_API_KEY'),
     ],
 ];
