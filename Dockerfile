@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y \
         xml \
     && rm -rf /var/lib/apt/lists/*
 
+
+RUN usermod -aG 1000 www-data
+
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
