@@ -23,7 +23,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN usermod -aG 1000 www-data
+RUN if ! getent group 1000 >/dev/null; then \
+        groupadd -g 1000 render; \
+    fi \
+    && usermod -aG 1000 www-data
 
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
