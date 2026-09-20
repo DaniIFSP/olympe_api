@@ -10,7 +10,7 @@ class AdministradorMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        $usuario = $rrequest->user();
+        $usuario = $request->user();
 
         if(!$usuario || $usuario->tipo !== 'administrador') {
             return response()->json([

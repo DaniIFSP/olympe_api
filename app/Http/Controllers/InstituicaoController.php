@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Instituicao;
 use App\Models\EnderecoInstituicao;
+use Illuminate\Support\Facades\Storage;
 
 class InstituicaoController extends Controller
 {
@@ -13,6 +14,16 @@ class InstituicaoController extends Controller
     public function index()
     {
         $instituicoes = Instituicao::with('endereco')->get();
+
+        $instituicoes->transform(function ($instituicao) {
+            if ($instituicao->imagem) {
+                $instituicao->imagem = asset (
+                    'storage/' . $instituicao->imagem
+                );
+            }
+
+            return $instituicao;
+        });
 
         return response()->json([
             "instituicoes"=>$instituicoes
@@ -23,14 +34,28 @@ class InstituicaoController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->validate([
+            'nome' => 'required|string|max:90',
+            'descricao' => 'nullable|string|max:300',
+            'imagem' => 'nullable|image|mimes|jpeg,png,jpg,webp|max:5120',
+            'endereco' => 'nullable|array',
+        ]);
+
+        $caminhoImagem = null;
+
+        if ($request->hasFile('imagem')) {
+            $caminhoImagem = $request->file('imagem')
+                ->store('instituicoes', 'public');
+        }
+
         $instituicao = Instituicao::create([
 
             'nome'=>$request->nome,
-            'imagem'=>$request->imagem,
+            'imagem'=>$caminhoImagem,
             'descricao'=>$request->descricao
 
         ]);
-
 
         if($request->endereco)
         {
@@ -62,7 +87,9 @@ class InstituicaoController extends Controller
         return response()->json([
             "cod"=>$instituicao->cod,
             "nome"=> $instituicao->nome,
-            "imagem"=>$instituicao->imagem,
+            "imagem"=>$instituicao->imagem
+                ? asset('storage/' . $instituicao->imagem)
+                : null,
             "descricao"=>$instituicao->descricao,
             "enderecos"=>$instituicao->endereco->map(function($endereco){
                 return [
@@ -95,21 +122,41 @@ class InstituicaoController extends Controller
             ],404);
         }
 
-        $instituicao->update([
-            'nome'=>$request->nome,
-            'imagem'=>$request->imagem,
-            'descricao'=>$request->descricao
+        $request->validate([
+            'nome' => 'sometimes|required|string|max:90',
+            'descricao' => 'nullable|string|max:300',
+            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'endereco' => 'nullable|array',
         ]);
 
-        if($instituicao->endereco && $request->endereco)
-        {
+        $dados = [
+            'nome' => $request->nome,
+            'descricao' => $request->descricao
+        ];
+
+        if ($request->hasFile('imagem')) {
+
+            if ($instituicao->imagem) {
+                Storage::disk('public')->delete(
+                    $instituicao->imagem
+                );
+            }
+
+            $dados['imagem'] = $request->file('imagem')
+                ->store('instituicoes', 'public');
+        }
+
+        $instituicao->update(dados);
+
+        if($instituicao->endereco && $request->endereco) {
             $instituicao->endereco->update(
                 $request->endereco
             );
         }
         
         return response()->json([
-            "mensagem"=>"Atualizado com sucesso"
+            "mensagem"=>"Atualizado com sucesso",
+            "dados" => $instituicao->load('endereco')
         ]);
     }
 
@@ -124,6 +171,12 @@ class InstituicaoController extends Controller
             return response()->json([
                 "erro"=>"Instituição não encontrada"
             ],404);
+        }
+
+        if ($instituicao->imagem) {
+            Storage::disk('public')->delete(
+                $instituicao->imagem
+            );
         }
 
         $instituicao->delete();
