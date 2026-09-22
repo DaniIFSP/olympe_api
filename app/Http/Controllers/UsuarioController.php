@@ -67,7 +67,7 @@ class UsuarioController extends Controller
 
     $dados['senha'] = Hash::make($dados['senha']);
 
-    $dados['tipo'] = 'cliente';
+    $dados['tipo'] = 'usuario';
 
     $usuario = DB::transaction(function () use (
         $dados,

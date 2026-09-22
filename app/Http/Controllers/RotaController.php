@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Supports\Facades\Log;
 
 class RotaController extends Controller
 {
@@ -19,6 +20,8 @@ class RotaController extends Controller
 
         $origin = $dados['origin'];
         $destination = $dados['destination'];
+
+        Log::info('alo mamae');
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
