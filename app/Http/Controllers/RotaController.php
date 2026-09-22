@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Supports\Facades\Log;
+use Illuminate\Support\Facades\Log;
 
 class RotaController extends Controller
 {
