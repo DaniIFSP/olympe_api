@@ -25,7 +25,7 @@ class RotaController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'X-Goog-Api-Key' => config('services.google.routes_api_key'),
+            'X-Goog-Api-Key' => config('process.env.GOOGLE_ROUTES_API_KEY'),
             'X-Goog-FieldMask' => implode(',', [
                 'routes.distanceMeters',
                 'routes.duration',
