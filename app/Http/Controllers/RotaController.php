@@ -21,9 +21,16 @@ class RotaController extends Controller
         $origin = $dados['origin'];
         $destination = $dados['destination'];
 
+        $apiKey = config('services.google.routes_api_key');
+
+        Log::info('Verificação Google Routes', [
+            'chave_configurada' => !empty($apiKey),
+            'tamanho_chave' => $apiKey ? strlen($apiKey) : 0,
+        ]);
+
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'X-Goog-Api-Key' => config('services.google.routes_api_key'),
+            'X-Goog-Api-Key' => $apiKey,
             'X-Goog-FieldMask' => implode(',', [
                 'routes.distanceMeters',
                 'routes.duration',
