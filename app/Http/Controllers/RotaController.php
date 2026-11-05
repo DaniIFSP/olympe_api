@@ -21,11 +21,9 @@ class RotaController extends Controller
         $origin = $dados['origin'];
         $destination = $dados['destination'];
 
-        Log::info('alo mamae');
-
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'X-Goog-Api-Key' => config('process.env.GOOGLE_ROUTES_API_KEY'),
+            'X-Goog-Api-Key' => config('services.google.routes_api_key'),
             'X-Goog-FieldMask' => implode(',', [
                 'routes.distanceMeters',
                 'routes.duration',
