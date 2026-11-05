@@ -79,10 +79,11 @@ class RotaController extends Controller
         );
 
         if ($response->failed()) {
-            return response()->json([
-                'message' => 'Não foi possível calcular a rota.',
-                'google_error' => $response->json(),
-            ], $response->status());
+        return response()->json([
+            'message' => 'Não foi possível calcular a rota.',
+            'google_key_configured' => filled($apiKey),
+            'google_error' => $response->json(),
+        ], $response->status());
         }
 
         return response()->json([
