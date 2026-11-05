@@ -10,6 +10,16 @@ class RotaController extends Controller
 {
     public function calcular(Request $request)
     {
+
+        error_log('OLYMPE: endpoint de rotas foi chamado');
+
+        $apiKey = config('services.google.routes_api_key');
+
+        error_log(
+        'OLYMPE: chave Google configurada? ' .
+        (filled($apiKey) ? 'SIM' : 'NAO')
+    );
+
         $dados = $request->validate([
             'origin.latitude' => ['required', 'numeric', 'between:-90,90'],
             'origin.longitude' => ['required', 'numeric', 'between:-180,180'],
