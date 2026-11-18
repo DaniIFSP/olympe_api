@@ -44,6 +44,39 @@ class DenunciaController extends Controller
     ], 201);
 }
 
+
+    // LISTAR SOMENTE AS DENÚNCIAS DA USUÁRIA AUTENTICADA
+    public function minhas(Request $request)
+    {
+        $denuncias = Denuncia::where('cod_usuario', $request->user()->cod)
+            ->orderByDesc('data_denuncia')
+            ->get();
+
+        return response()->json([
+            'denuncias' => $denuncias
+        ], 200);
+    }
+
+    // EXCLUIR UMA DENÚNCIA DA PRÓPRIA USUÁRIA
+    public function destroyMinha(Request $request, string $id)
+    {
+        $denuncia = Denuncia::where('cod', $id)
+            ->where('cod_usuario', $request->user()->cod)
+            ->first();
+
+        if (!$denuncia) {
+            return response()->json([
+                'mensagem' => 'Denúncia não encontrada ou não pertence à sua conta.'
+            ], 404);
+        }
+
+        $denuncia->delete();
+
+        return response()->json([
+            'mensagem' => 'Denúncia excluída com sucesso.'
+        ], 200);
+    }
+
     // BUSCAR
 
     public function show(string $id)
@@ -101,10 +134,10 @@ class DenunciaController extends Controller
             ], 404);
         }
 
-        $denunciaa->delete();
+        $denuncia->delete();
 
         return response()->json([
-            'mensagem' => 'Denúnia excluída com sucesso.'
+            'mensagem' => 'Denúncia excluída com sucesso.'
         ], 200);
     }
 }

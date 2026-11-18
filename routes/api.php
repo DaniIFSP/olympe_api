@@ -53,6 +53,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/denuncias', [DenunciaController::class, 'store']);
+    Route::get('/minhas-denuncias', [DenunciaController::class, 'minhas']);
+    Route::delete('/minhas-denuncias/{id}', [DenunciaController::class, 'destroyMinha']);
 });
 
 
@@ -79,6 +81,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function() {
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/denuncias', [DenunciaController::class, 'index']);
     Route::get('/denuncias/{id}', [DenunciaController::class, 'show']);
+    Route::delete('/denuncias/{id}', [DenunciaController::class, 'destroy']);
 
     Route::patch(
         '/denuncias/{id}/status',
@@ -111,8 +114,3 @@ Route::get('/teste-banco', function(){
         'conexao'=> 'ok'
     ]);
 });
-
-
-
-
-
