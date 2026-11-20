@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
 Route::post('/recuperar-senha', [RecuperacaoSenhaController::class, 'solicitar']);
 Route::post('/verificar-codigo', [RecuperacaoSenhaController::class, 'verificar']);
+Route::post('/redefinir-senha', [RecuperacaoSenhaController::class, 'redefinir']);
 
 //DENÚNCIAS
 
