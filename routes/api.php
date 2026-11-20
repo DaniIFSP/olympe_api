@@ -108,9 +108,24 @@ Route::middleware('auth:sanctum')->group(function() {
 
 
 
-Route::get('/teste-banco', function(){
+Route::get('/acordar', function(){
 
     return response()->json([
         'conexao'=> 'ok'
+    ]);
+});
+
+Route::post('/teste-email', function () {
+
+    \Illuminate\Support\Facades\Mail::raw(
+        'Este é um e-mail de teste do Olympe for Safe.',
+        function ($message) {
+            $message->to(config('mail.from.address'))
+                    ->subject('Teste de envio - Olympe for Safe');
+        }
+    );
+
+    return response()->json([
+        'mensagem' => 'E-mail enviado com sucesso!'
     ]);
 });

@@ -32,43 +32,40 @@ class InstituicaoController extends Controller
 
     //CADASTRAR
 
-    public function store(Request $request)
-    {
+   public function store(Request $request)
+{
+    $request->validate([
+        'nome' => 'required|string|max:90',
+        'descricao' => 'nullable|string|max:300',
+        'imagem' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', 
+        'enderecos' => 'nullable|array', 
+    ]);
 
-        $request->validate([
-            'nome' => 'required|string|max:90',
-            'descricao' => 'nullable|string|max:300',
-            'imagem' => 'nullable|image|mimes|jpeg,png,jpg,webp|max:5120',
-            'endereco' => 'nullable|array',
-        ]);
+    $caminhoImagem = null;
 
-        $caminhoImagem = null;
-
-        if ($request->hasFile('imagem')) {
-            $caminhoImagem = $request->file('imagem')
-                ->store('instituicoes', 'public');
-        }
-
-        $instituicao = Instituicao::create([
-
-            'nome'=>$request->nome,
-            'imagem'=>$caminhoImagem,
-            'descricao'=>$request->descricao
-
-        ]);
-
-        if($request->endereco)
-        {
-            $instituicao->endereco()->create(
-                $request->endereco
-            );
-        }
-
-        return response()->json([
-            "mensagem"=>"Instituição cadastrada",
-            "dados"=>$instituicao->load('endereco')
-        ],201);
+    if ($request->hasFile('imagem')) {
+        $caminhoImagem = $request->file('imagem')
+            ->store('instituicoes', 'public');
     }
+
+    $instituicao = Instituicao::create([
+        'nome' => $request->nome,
+        'imagem' => $caminhoImagem,
+        'descricao' => $request->descricao
+    ]);
+
+    
+    if ($request->has('enderecos') && is_array($request->enderecos)) {
+        foreach ($request->enderecos as $enderecoData) {
+            $instituicao->enderecos()->create($enderecoData); 
+        }
+    }
+
+    return response()->json([
+        "mensagem" => "Instituição cadastrada com sucesso",
+        "dados" => $instituicao->load('enderecos') 
+    ], 201);
+}
 
     //MOSTRAR 
     
