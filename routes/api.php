@@ -120,7 +120,7 @@ Route::post('/teste-email', function () {
     \Illuminate\Support\Facades\Mail::raw(
         'Este é um e-mail de teste do Olympe for Safe.',
         function ($message) {
-            $message->to(config('mail.from.address'))
+            $message->to('olympeforsafe@gmail.com')
                     ->subject('Teste de envio - Olympe for Safe');
         }
     );
