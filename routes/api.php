@@ -10,6 +10,7 @@ use App\Http\Controllers\PontoRiscoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VerificacaoTelefoneController;
 use App\Http\Controllers\RotaController;
+use App\Http\Controllers\RecuperacaoSenhaController;
 
 
 
@@ -48,6 +49,15 @@ Route::post('/usuarios', [UsuarioController::class, 'store']);
 //LOGIN E LOGOUT 
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::put('/usuario', [UsuarioController::class,'updateMe',]);
+});
+
+//RECUPERAR SENHA
+
+Route::post('/recuperar-senha', [RecuperacaoSenhaController::class, 'solicitar']);
 
 //DENÚNCIAS
 
@@ -98,15 +108,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::delete('/pontos-risco/{id}', [PontoRiscoController::class, 'destroy']);
 });
 
-//LOGIN E LGOUT
-
-Route::middleware('auth:sanctum')->group(function() {
-    Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::put('/usuario', [UsuarioController::class,'updateMe',]);
-});
-
-
+//ACORDAR API
 
 Route::get('/acordar', function(){
 
@@ -114,6 +116,8 @@ Route::get('/acordar', function(){
         'conexao'=> 'ok'
     ]);
 });
+
+//Teste verificação email
 
 Route::post('/teste-email', function () {
 
