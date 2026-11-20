@@ -66,4 +66,67 @@ class RecuperacaoSenhaController extends Controller
             'mensagem' => $mensagem
         ], 200);
     }
+
+
+    public function verificar(Request $request)
+    {
+        $dados = $request->validate([
+            'email' => 'required|email|max:90',
+            'codigo' => 'required|string|size:6',
+        ]);
+
+        $email = $dados['email'];
+        $codigo = $dados['codigo'];
+
+        $recuperacao = DB::table('recuperacao_senha')
+            ->where('email', $email)
+            ->first();
+
+        if (!$recuperacao) {
+            return response()->json([
+                'mensagem' => 'Solicite um novo código de recuperação.'
+            ], 422);
+        }
+
+        // Verifica se o código expirou
+        if (now()->greaterThan($recuperacao->expira_em)) {
+            DB::table('recuperacao_senha')
+                ->where('email', $email)
+                ->delete();
+
+            return response()->json([
+                'mensagem' => 'O código expirou. Solicite um novo código.'
+            ], 422);
+        }
+
+        // Verifica se já atingiu o limite de tentativas
+        if ($recuperacao->tentativas >= 5) {
+            DB::table('recuperacao_senha')
+                ->where('email', $email)
+                ->delete();
+
+            return response()->json([
+                'mensagem' => 'Limite de tentativas atingido. Solicite um novo código.'
+            ], 429);
+        }
+
+        // Confere o código digitado com o hash armazenado
+        if (!Hash::check($codigo, $recuperacao->codigo)) {
+
+            DB::table('recuperacao_senha')
+                ->where('email', $email)
+                ->increment('tentativas');
+
+            return response()->json([
+                'mensagem' => 'Código incorreto. Verifique e tente novamente.'
+            ], 422);
+        }
+
+        // Código correto
+        return response()->json([
+            'mensagem' => 'Código verificado com sucesso!',
+            'validado' => true
+        ], 200);
+    }
+
 }
