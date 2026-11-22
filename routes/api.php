@@ -103,21 +103,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-// ROTAS DO ADMINISTRADOR
+// ROTAS DA EQUIPE OLYMPE FOR SAFE
+// Administradores e funcionários
 
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'equipe'])->group(function () {
 
     // INSTITUIÇÕES
+
     Route::post('/instituicoes', [InstituicaoController::class, 'store']);
 
     Route::put('/instituicoes/{id}', [InstituicaoController::class, 'update']);
 
     Route::patch('/instituicoes/{id}', [InstituicaoController::class, 'update']);
 
-    Route::delete('/instituicoes/{id}', [InstituicaoController::class, 'destroy']);
-
 
     // DENÚNCIAS
+
     Route::get('/denuncias', [DenunciaController::class, 'index']);
 
     Route::get('/denuncias/{id}', [DenunciaController::class, 'show']);
@@ -127,10 +128,27 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         [DenunciaController::class, 'atualizarStatus']
     );
 
+});
+
+
+// ROTAS EXCLUSIVAS DO ADMINISTRADOR
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+
+    // GERENCIAR EQUIPE
+
+    Route::post('/funcionarios', [UsuarioController::class, 'cadastrarEquipe']);
+
+    // EXCLUIR INSTITUIÇÕES
+
+    Route::delete('/instituicoes/{id}', [InstituicaoController::class, 'destroy']);
+
+    // EXCLUIR DENÚNCIAS
+
     Route::delete('/denuncias/{id}', [DenunciaController::class, 'destroy']);
 
-
     // PONTOS DE RISCO
+
     Route::post('/pontos-risco', [PontoRiscoController::class, 'store']);
 
     Route::put('/pontos-risco/{id}', [PontoRiscoController::class, 'update']);

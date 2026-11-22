@@ -86,6 +86,42 @@ class UsuarioController extends Controller
     ], 201);
 }
 
+
+// CADASTRAR FUNCIONÁRIO OU ADMINISTRADOR
+
+public function cadastrarEquipe(Request $request)
+{
+    $dados = $request->validate([
+        'nome' => 'required|string|max:90',
+        'idade' => 'nullable|integer|min:0|max:130',
+        'email' => 'required|email|max:90|unique:tb_usuarios,email',
+        'telefone' => [
+            'required',
+            'string',
+            'max:20',
+            'unique:tb_usuarios,telefone',
+            'regex:/^\+[1-9][0-9]{7,14}$/',
+        ],
+        'senha' => 'required|string|min:8|max:255',
+        'tipo' => 'required|in:funcionario,administrador',
+    ], [
+        'email.unique' => 'Este e-mail já está cadastrado.',
+        'telefone.unique' => 'Este telefone já está cadastrado.',
+        'telefone.regex' => 'Informe o telefone no formato internacional.',
+        'senha.min' => 'A senha deve possuir pelo menos 8 caracteres.',
+        'tipo.in' => 'O perfil selecionado é inválido.',
+    ]);
+
+    $dados['senha'] = Hash::make($dados['senha']);
+
+    $usuario = Usuario::create($dados);
+
+    return response()->json([
+        'mensagem' => 'Membro da equipe cadastrado com sucesso.',
+        'usuario' => $usuario,
+    ], 201);
+}
+
     //LISTAR UM 
 
     public function show(string $id)
