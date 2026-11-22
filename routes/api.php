@@ -136,7 +136,7 @@ Route::middleware(['auth:sanctum', 'equipe'])->group(function () {
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     // GERENCIAR EQUIPE
-
+    Route::get('/funcionarios', [UsuarioController::class, 'listarEquipe']);
     Route::post('/funcionarios', [UsuarioController::class, 'cadastrarEquipe']);
 
     // EXCLUIR INSTITUIÇÕES

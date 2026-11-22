@@ -122,6 +122,29 @@ public function cadastrarEquipe(Request $request)
     ], 201);
 }
 
+
+    // LISTAR MEMBROS DA EQUIPE
+    public function listarEquipe()
+    {
+        $usuarios = Usuario::whereIn('tipo', [
+            'funcionario',
+            'administrador'
+        ])
+        ->select([
+            'cod',
+            'nome',
+            'email',
+            'telefone',
+            'idade',
+            'tipo'
+        ])
+        ->orderBy('nome')
+        ->get();
+
+        return response()->json($usuarios);
+    }
+
+
     //LISTAR UM 
 
     public function show(string $id)
