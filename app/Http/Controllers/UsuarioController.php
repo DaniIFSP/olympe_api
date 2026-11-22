@@ -136,7 +136,8 @@ public function cadastrarEquipe(Request $request)
             'email',
             'telefone',
             'idade',
-            'tipo'
+            'tipo',
+            'ativo' // <-- ADICIONAMOS ESTA COLUNA
         ])
         ->orderBy('nome')
         ->get();
