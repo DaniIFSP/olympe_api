@@ -12,9 +12,8 @@ use App\Http\Controllers\RotaController;
 use App\Http\Controllers\RecuperacaoSenhaController;
 
 
-// ==========================================
 // ROTAS PÚBLICAS
-// ==========================================
+
 
 // GERAÇÃO DE ROTAS
 Route::post('/rotas', [RotaController::class, 'calcular']);
@@ -57,17 +56,14 @@ Route::post('/redefinir-senha', [RecuperacaoSenhaController::class, 'redefinir']
 
 
 // DENÚNCIAS ANÔNIMAS
-// Não exige login
+
 Route::post('/denuncias', [DenunciaController::class, 'store']);
+Route::post('/consultar-denuncia', [DenunciaController::class, 'consultar']);
 
-
-// CONSULTA DE DENÚNCIA
-// (Adicionaremos a rota quando implementarmos o método de consulta)
 
 
 // PONTOS DE RISCO
 Route::get('/pontos-risco', [PontoRiscoController::class, 'index']);
-
 Route::get('/pontos-risco/{id}', [PontoRiscoController::class, 'show']);
 
 
@@ -80,7 +76,7 @@ Route::get('/acordar', function () {
 
 
 // TESTE DE E-MAIL
-// Temporária - remover posteriormente
+
 Route::post('/teste-email', function () {
 
     \Illuminate\Support\Facades\Mail::raw(
@@ -97,25 +93,17 @@ Route::post('/teste-email', function () {
 });
 
 
-// ==========================================
-// ROTAS AUTENTICADAS
-// ==========================================
+// ROTAS AUTENTICADAS 
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // USUÁRIO LOGADO
     Route::get('/me', [AuthController::class, 'me']);
-
     Route::post('/logout', [AuthController::class, 'logout']);
-
     Route::put('/usuario', [UsuarioController::class, 'updateMe']);
 
 });
 
-
-// ==========================================
-// ROTAS EXCLUSIVAS DO ADMINISTRADOR
-// ==========================================
+// ROTAS DO ADMINISTRADOR
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 

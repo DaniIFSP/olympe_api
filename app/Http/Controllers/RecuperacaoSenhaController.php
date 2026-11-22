@@ -202,7 +202,7 @@ class RecuperacaoSenhaController extends Controller
         $usuario->senha = Hash::make($dados['senha']);
         $usuario->save();
 
-        // Revoga tokens antigos, caso existam
+        // Apaga tokens antigos, caso existam
         $usuario->tokens()->delete();
 
         // Apaga o código de recuperação utilizado

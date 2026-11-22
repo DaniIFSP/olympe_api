@@ -4,97 +4,133 @@ namespace App\Http\Controllers;
 
 use App\Models\Denuncia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 
 class DenunciaController extends Controller
 {
     //LISTAR TODOS
 
     public function index()
-    {
-        $denuncias = Denuncia::with(
-            'usuarios:cod,nome,email,telefone'
-        )
-            ->orderByDesc('data_denuncia')
-            ->get();
-        
-            return response()->json([
-                'denuncias' => $denuncias
-            ], 200);
-    }
+{
+    $denuncias = Denuncia::orderByDesc('data_denuncia')
+        ->get();
+
+    return response()->json([
+        'denuncias' => $denuncias
+    ], 200);
+}
 
     //CADASTRAR 
 
-    public function store(Request $request)
+   public function store(Request $request)
 {
-    $dados = $request->validate([
-        'latitude' => 'required|numeric|between:-90,90',
-        'longitude' => 'required|numeric|between:-180,180',
-        'tipo' => 'required|string|max:50',
-        'descricao' => 'nullable|string|max:300',
+   $dados = $request->validate([
+    'latitude' => 'required|numeric|between:-90,90',
+    'longitude' => 'required|numeric|between:-180,180',
+    'tipo' => 'required|string|max:50',
+    'descricao' => 'nullable|string|max:300',
+    'local' => 'nullable|string|max:255',
+    'data_ocorrido' => 'nullable|date',
+    'email' => 'required|email|max:255',
+]);
+
+    // Gera um protocolo único
+    do {
+        $protocolo = 'OLY-' . strtoupper(Str::random(8));
+    } while (
+        Denuncia::where('protocolo', $protocolo)->exists()
+    );
+
+    // Gera código secreto de acesso
+    $caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+    $codigoAcesso = '';
+
+    for ($i = 0; $i < 10; $i++) {
+        $codigoAcesso .= $caracteres[
+            random_int(0, strlen($caracteres) - 1)
+        ];
+    }
+
+    // Cria relato anônimo
+    $denuncia = Denuncia::create([
+        'cod_usuario' => null,
+        'latitude' => $dados['latitude'],
+        'longitude' => $dados['longitude'],
+        'tipo' => $dados['tipo'],
+        'descricao' => $dados['descricao'] ?? null,
+        'local' => $dados['local'] ?? null,
+        'data_ocorrido' => $dados['data_ocorrido'] ?? null,
+        'status' => 'Pendente',
+        'protocolo' => $protocolo,
+        'codigo_acesso' => Hash::make($codigoAcesso),
     ]);
 
-    $dados['cod_usuario'] = $request->user()->cod;
-    $dados['status'] = 'Pendente';
-
-    $denuncia = Denuncia::create($dados);
-
     return response()->json([
-        'mensagem' => 'Denúncia enviada com sucesso.',
-        'protocolo' => $denuncia->cod,
+        'mensagem' => 'Relato enviado com sucesso!',
+        'protocolo' => $denuncia->protocolo,
+        'codigo_acesso' => $codigoAcesso,
     ], 201);
 }
 
+public function consultar(Request $request)
+{
+    $dados = $request->validate([
+        'protocolo' => 'required|string|max:20',
+        'codigo_acesso' => 'required|string|max:20',
+    ]);
 
-    // LISTAR SOMENTE AS DENÚNCIAS DA USUÁRIA AUTENTICADA
-    public function minhas(Request $request)
-    {
-        $denuncias = Denuncia::where('cod_usuario', $request->user()->cod)
-            ->orderByDesc('data_denuncia')
-            ->get();
+    $denuncia = Denuncia::where(
+        'protocolo',
+        strtoupper(trim($dados['protocolo']))
+    )->first();
 
+    if (
+    !$denuncia ||
+    !$denuncia->codigo_acesso ||
+    !Hash::check(
+        strtoupper(trim($dados['codigo_acesso'])),
+        $denuncia->codigo_acesso
+    )) {
         return response()->json([
-            'denuncias' => $denuncias
-        ], 200);
+            'mensagem' => 'Protocolo ou código de acesso inválido.'
+        ], 403);
     }
 
-    // EXCLUIR UMA DENÚNCIA DA PRÓPRIA USUÁRIA
-    public function destroyMinha(Request $request, string $id)
-    {
-        $denuncia = Denuncia::where('cod', $id)
-            ->where('cod_usuario', $request->user()->cod)
-            ->first();
+    return response()->json([
+        'denuncia' => [
+            'protocolo' => $denuncia->protocolo,
+            'tipo' => $denuncia->tipo,
+            'descricao' => $denuncia->descricao,
+            'local' => $denuncia->local,
+            'latitude' => $denuncia->latitude,
+            'longitude' => $denuncia->longitude,
+            'data_ocorrido' => $denuncia->data_ocorrido,
+            'data_denuncia' => $denuncia->data_denuncia,
+            'status' => $denuncia->status,
+        ]
+    ]);
+}
 
-        if (!$denuncia) {
-            return response()->json([
-                'mensagem' => 'Denúncia não encontrada ou não pertence à sua conta.'
-            ], 404);
-        }
-
-        $denuncia->delete();
-
-        return response()->json([
-            'mensagem' => 'Denúncia excluída com sucesso.'
-        ], 200);
-    }
 
     // BUSCAR
 
     public function show(string $id)
-    {
-        $denuncia = Denuncia::with(
-            'usuario:cod,nome,email,telefone'
-        )->find($id);
+{
+    $denuncia = Denuncia::find($id);
 
-        if (!$denuncia) {
-            return response()->json([
-                'mensagem' => 'Denúncia não encontrada'
-            ], 404);
-        }
-
+    if (!$denuncia) {
         return response()->json([
-            'denuncia' => $denuncia
-        ], 200);
+            'mensagem' => 'Denúncia não encontrada.'
+        ], 404);
     }
+
+    return response()->json([
+        'denuncia' => $denuncia
+    ], 200);
+}
 
     //ATUALIZAR DENÚNCIA
 
