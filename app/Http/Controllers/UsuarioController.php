@@ -145,6 +145,112 @@ public function cadastrarEquipe(Request $request)
     }
 
 
+    // EDITAR MEMBRO DA EQUIPE
+    public function atualizarEquipe(Request $request, $id)
+    {
+        $usuario = Usuario::whereIn('tipo', [
+            'funcionario',
+            'administrador'
+        ])->findOrFail($id);
+
+        $dados = $request->validate([
+            'nome' => 'required|string|max:90',
+            'idade' => 'nullable|integer|min:0|max:130',
+            'email' => 'required|email|max:90|unique:tb_usuarios,email,' . $usuario->cod . ',cod',
+            'telefone' => [
+                'required',
+                'string',
+                'max:20',
+                'unique:tb_usuarios,telefone,' . $usuario->cod . ',cod',
+                'regex:/^\+[1-9][0-9]{7,14}$/',
+            ],
+            'tipo' => 'required|in:funcionario,administrador',
+        ], [
+            'email.unique' => 'Este e-mail já está cadastrado.',
+            'telefone.unique' => 'Este telefone já está cadastrado.',
+            'telefone.regex' => 'Informe o telefone no formato internacional.',
+            'tipo.in' => 'O perfil selecionado é inválido.',
+        ]);
+
+        // Impede que o administrador altere seu próprio perfil de acesso
+        if (
+            $usuario->cod == $request->user()->cod &&
+            $dados['tipo'] !== $usuario->tipo
+        ) {
+            return response()->json([
+                'mensagem' => 'Você não pode alterar seu próprio perfil de acesso.'
+            ], 403);
+        }
+
+        $usuario->nome = $dados['nome'];
+        $usuario->idade = $dados['idade'] ?? null;
+        $usuario->email = $dados['email'];
+        $usuario->telefone = $dados['telefone'];
+        $usuario->tipo = $dados['tipo'];
+
+        $usuario->save();
+
+        return response()->json([
+            'mensagem' => 'Membro da equipe atualizado com sucesso.',
+            'usuario' => $usuario->only([
+                'cod',
+                'nome',
+                'idade',
+                'email',
+                'telefone',
+                'tipo',
+                'ativo'
+            ]),
+        ]);
+    }
+
+
+    // ATIVAR OU DESATIVAR MEMBRO DA EQUIPE
+    public function alterarSituacaoEquipe(Request $request, $id)
+    {
+        $usuario = Usuario::whereIn('tipo', [
+            'funcionario',
+            'administrador'
+        ])->findOrFail($id);
+
+        $dados = $request->validate([
+            'ativo' => 'required|boolean',
+        ]);
+
+        // Impede o administrador de desativar a própria conta
+        if (
+            $usuario->cod == $request->user()->cod &&
+            !$dados['ativo']
+        ) {
+            return response()->json([
+                'mensagem' => 'Você não pode desativar sua própria conta.'
+            ], 403);
+        }
+
+        $usuario->ativo = $dados['ativo'];
+        $usuario->save();
+
+        // Se desativar, encerra as sessões existentes
+        if (!$usuario->ativo) {
+            $usuario->tokens()->delete();
+        }
+
+        return response()->json([
+            'mensagem' => $usuario->ativo
+                ? 'Membro da equipe ativado com sucesso.'
+                : 'Membro da equipe desativado com sucesso.',
+            'usuario' => $usuario->only([
+                'cod',
+                'nome',
+                'email',
+                'telefone',
+                'tipo',
+                'ativo'
+            ]),
+        ]);
+    }
+
+
     //LISTAR UM 
 
     public function show(string $id)

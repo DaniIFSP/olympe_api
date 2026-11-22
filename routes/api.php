@@ -138,6 +138,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // GERENCIAR EQUIPE
     Route::get('/funcionarios', [UsuarioController::class, 'listarEquipe']);
     Route::post('/funcionarios', [UsuarioController::class, 'cadastrarEquipe']);
+    Route::put('/funcionarios/{id}', [UsuarioController::class, 'atualizarEquipe']);
+    Route::patch('/funcionarios/{id}/situacao', [UsuarioController::class, 'alterarSituacaoEquipe']);
 
     // EXCLUIR INSTITUIÇÕES
 
