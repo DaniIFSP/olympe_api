@@ -4,20 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Instituicao;
-use App\Models\EnderecoInstituicao;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class InstituicaoController extends Controller
 {
-    //LISTAR
+    // LISTAR
 
     public function index()
     {
         $instituicoes = Instituicao::with('endereco')->get();
 
         $instituicoes->transform(function ($instituicao) {
+
             if ($instituicao->imagem) {
-                $instituicao->imagem = asset (
+                $instituicao->imagem = asset(
                     'storage/' . $instituicao->imagem
                 );
             }
@@ -26,110 +27,169 @@ class InstituicaoController extends Controller
         });
 
         return response()->json([
-            "instituicoes"=>$instituicoes
+            "instituicoes" => $instituicoes
         ]);
     }
 
-    //CADASTRAR
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'nome' => 'required|string|max:90',
-        'descricao' => 'nullable|string|max:300',
-        'imagem' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', 
-        'enderecos' => 'nullable|array', 
-    ]);
+    // CADASTRAR
 
-    $caminhoImagem = null;
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nome' => 'required|string|max:90',
+            'descricao' => 'nullable|string|max:300',
+            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
 
-    if ($request->hasFile('imagem')) {
-        $caminhoImagem = $request->file('imagem')
-            ->store('instituicoes', 'public');
-    }
+            'enderecos' => 'nullable|array',
 
-    $instituicao = Instituicao::create([
-        'nome' => $request->nome,
-        'imagem' => $caminhoImagem,
-        'descricao' => $request->descricao
-    ]);
+            'enderecos.*.telefone' => 'nullable|string|max:30',
+            'enderecos.*.cep' => 'nullable|string|max:9',
+            'enderecos.*.logradouro' => 'nullable|string|max:255',
+            'enderecos.*.numero' => 'nullable|string|max:20',
+            'enderecos.*.complemento' => 'nullable|string|max:100',
+            'enderecos.*.bairro' => 'nullable|string|max:100',
+            'enderecos.*.cidade' => 'nullable|string|max:100',
+            'enderecos.*.uf' => 'nullable|string|max:2',
+            'enderecos.*.dia_semana' => 'nullable|string|max:100',
+            'enderecos.*.horario_inicio' => 'nullable|string|max:10',
+            'enderecos.*.horario_fim' => 'nullable|string|max:10',
+        ]);
 
-    
-    if ($request->has('enderecos') && is_array($request->enderecos)) {
-        foreach ($request->enderecos as $enderecoData) {
-            $instituicao->enderecos()->create($enderecoData); 
+        $caminhoImagem = null;
+
+        if ($request->hasFile('imagem')) {
+            $caminhoImagem = $request->file('imagem')
+                ->store('instituicoes', 'public');
         }
+
+        $instituicao = Instituicao::create([
+            'nome' => $request->nome,
+            'imagem' => $caminhoImagem,
+            'descricao' => $request->descricao
+        ]);
+
+        // Salvar os vários endereços
+
+        if ($request->has('enderecos') && is_array($request->enderecos)) {
+
+            foreach ($request->enderecos as $enderecoData) {
+
+                // Remove campos totalmente vazios
+
+                $enderecoData = array_filter(
+                    $enderecoData,
+                    function ($valor) {
+                        return $valor !== null && $valor !== '';
+                    }
+                );
+
+                if (!empty($enderecoData)) {
+                    $instituicao->endereco()->create($enderecoData);
+                }
+            }
+        }
+
+        return response()->json([
+            "mensagem" => "Instituição cadastrada com sucesso",
+            "dados" => $instituicao->load('endereco')
+        ], 201);
     }
 
-    return response()->json([
-        "mensagem" => "Instituição cadastrada com sucesso",
-        "dados" => $instituicao->load('enderecos') 
-    ], 201);
-}
 
-    //MOSTRAR 
-    
+    // MOSTRAR
+
     public function show($id)
     {
         $instituicao = Instituicao::with('endereco')
             ->find($id);
 
-        if(!$instituicao)
-        {
+        if (!$instituicao) {
             return response()->json([
-                "erro"=>"Instituição não encontrada"
-            ],404);
+                "erro" => "Instituição não encontrada"
+            ], 404);
         }
 
         return response()->json([
-            "cod"=>$instituicao->cod,
-            "nome"=> $instituicao->nome,
-            "imagem"=>$instituicao->imagem
+            "cod" => $instituicao->cod,
+            "nome" => $instituicao->nome,
+
+            "imagem" => $instituicao->imagem
                 ? asset('storage/' . $instituicao->imagem)
                 : null,
-            "descricao"=>$instituicao->descricao,
-            "enderecos"=>$instituicao->endereco->map(function($endereco){
+
+            "descricao" => $instituicao->descricao,
+
+            "enderecos" => $instituicao->endereco->map(function ($endereco) {
+
                 return [
-                    "telefone"=>$endereco->telefone,
-                    "endereco"=>
-                    $endereco->logradouro . "," .
-                    $endereco->numero . "-" . 
-                    $endereco->bairro, 
-                    "cidade"=>$endereco->cidade,
-                    "uf"=>$endereco->uf,
-                    "latitude"=>$endereco->latitude,
-                    "longitude"=>$endereco->longitude,
-                    "horario_inicio"=>$endereco->horario_inicio,
-                    "horario_fim"=>$endereco->horario_fim
+                    "cod" => $endereco->cod,
+                    "telefone" => $endereco->telefone,
+                    "cep" => $endereco->cep,
+                    "logradouro" => $endereco->logradouro,
+                    "numero" => $endereco->numero,
+                    "complemento" => $endereco->complemento,
+                    "bairro" => $endereco->bairro,
+                    "cidade" => $endereco->cidade,
+                    "uf" => $endereco->uf,
+                    "dia_semana" => $endereco->dia_semana,
+                    "latitude" => $endereco->latitude,
+                    "longitude" => $endereco->longitude,
+                    "horario_inicio" => $endereco->horario_inicio,
+                    "horario_fim" => $endereco->horario_fim
                 ];
             })
         ]);
     }
 
-    // ATUALIZAR 
+
+    // ATUALIZAR
 
     public function update(Request $request, string $id)
     {
-        $instituicao = Instituicao::find($id);
+        $instituicao = Instituicao::with('endereco')
+            ->find($id);
 
-        if(!$instituicao)
-        {
+        if (!$instituicao) {
             return response()->json([
-                "erro"=>"Instituição não encontrada"
-            ],404);
+                "erro" => "Instituição não encontrada"
+            ], 404);
         }
 
         $request->validate([
             'nome' => 'sometimes|required|string|max:90',
             'descricao' => 'nullable|string|max:300',
             'imagem' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'endereco' => 'nullable|array',
+
+            'enderecos' => 'nullable|array',
+
+            'enderecos.*.cod' => 'nullable|integer',
+            'enderecos.*.telefone' => 'nullable|string|max:30',
+            'enderecos.*.cep' => 'nullable|string|max:9',
+            'enderecos.*.logradouro' => 'nullable|string|max:255',
+            'enderecos.*.numero' => 'nullable|string|max:20',
+            'enderecos.*.complemento' => 'nullable|string|max:100',
+            'enderecos.*.bairro' => 'nullable|string|max:100',
+            'enderecos.*.cidade' => 'nullable|string|max:100',
+            'enderecos.*.uf' => 'nullable|string|max:2',
+            'enderecos.*.dia_semana' => 'nullable|string|max:100',
+            'enderecos.*.horario_inicio' => 'nullable|string|max:10',
+            'enderecos.*.horario_fim' => 'nullable|string|max:10',
         ]);
 
-        $dados = [
-            'nome' => $request->nome,
-            'descricao' => $request->descricao
-        ];
+        // Atualizar nome e descrição
+
+        $dados = [];
+
+        if ($request->has('nome')) {
+            $dados['nome'] = $request->nome;
+        }
+
+        if ($request->has('descricao')) {
+            $dados['descricao'] = $request->descricao;
+        }
+
+        // Atualizar imagem, se uma nova foi enviada
 
         if ($request->hasFile('imagem')) {
 
@@ -143,19 +203,87 @@ class InstituicaoController extends Controller
                 ->store('instituicoes', 'public');
         }
 
-        $instituicao->update(dados);
-
-        if($instituicao->endereco && $request->endereco) {
-            $instituicao->endereco->update(
-                $request->endereco
-            );
+        if (!empty($dados)) {
+            $instituicao->update($dados);
         }
-        
+
+        // Atualizar endereços, caso tenham sido enviados
+
+        if ($request->has('enderecos') && is_array($request->enderecos)) {
+
+            $enderecosRecebidos = $request->enderecos;
+
+            // IDs dos endereços que continuam existindo
+
+            $codigosMantidos = [];
+
+            foreach ($enderecosRecebidos as $enderecoData) {
+
+                $codigoEndereco = $enderecoData['cod'] ?? null;
+
+                // Remove o código dos dados que serão salvos
+
+                unset($enderecoData['cod']);
+
+                // Remove campos vazios
+
+                $enderecoData = array_filter(
+                    $enderecoData,
+                    function ($valor) {
+                        return $valor !== null && $valor !== '';
+                    }
+                );
+
+                if (empty($enderecoData)) {
+                    continue;
+                }
+
+                if ($codigoEndereco) {
+
+                    // Atualiza endereço existente pertencente à instituição
+
+                    $endereco = $instituicao->endereco()
+                        ->where('cod', $codigoEndereco)
+                        ->first();
+
+                    if ($endereco) {
+                        $endereco->update($enderecoData);
+
+                        $codigosMantidos[] = $codigoEndereco;
+                    } else {
+                        // Código não pertence à instituição:
+                        // cadastra como um novo endereço
+
+                        $novoEndereco = $instituicao->endereco()
+                            ->create($enderecoData);
+
+                        $codigosMantidos[] = $novoEndereco->cod;
+                    }
+
+                } else {
+
+                    // Cadastrar endereço novo
+
+                    $novoEndereco = $instituicao->endereco()
+                        ->create($enderecoData);
+
+                    $codigosMantidos[] = $novoEndereco->cod;
+                }
+            }
+
+            // Remover endereços que não foram enviados
+
+            $instituicao->endereco()
+                ->whereNotIn('cod', $codigosMantidos)
+                ->delete();
+        }
+
         return response()->json([
-            "mensagem"=>"Atualizado com sucesso",
+            "mensagem" => "Instituição atualizada com sucesso",
             "dados" => $instituicao->load('endereco')
         ]);
     }
+
 
     // EXCLUIR
 
@@ -163,11 +291,10 @@ class InstituicaoController extends Controller
     {
         $instituicao = Instituicao::find($id);
 
-        if(!$instituicao)
-        {
+        if (!$instituicao) {
             return response()->json([
-                "erro"=>"Instituição não encontrada"
-            ],404);
+                "erro" => "Instituição não encontrada"
+            ], 404);
         }
 
         if ($instituicao->imagem) {
@@ -176,10 +303,14 @@ class InstituicaoController extends Controller
             );
         }
 
+        // Excluir os endereços vinculados
+
+        $instituicao->endereco()->delete();
+
         $instituicao->delete();
 
         return response()->json([
-            "mensagem"=>"Excluída com sucesso"
+            "mensagem" => "Instituição excluída com sucesso"
         ]);
     }
 }
