@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VerificacaoTelefoneController;
 use App\Http\Controllers\RotaController;
 use App\Http\Controllers\RecuperacaoSenhaController;
+use App\Http\Controllers\EncomendaController;
 
 
 // ROTAS PÚBLICAS
@@ -60,7 +61,11 @@ Route::post('/redefinir-senha', [RecuperacaoSenhaController::class, 'redefinir']
 Route::post('/denuncias', [DenunciaController::class, 'store']);
 Route::post('/consultar-denuncia', [DenunciaController::class, 'consultar']);
 
-
+// INTERESSE NO DISPOSITIVO OLYMPE
+Route::post(
+    '/encomendar',
+    [EncomendaController::class, 'store']
+);
 
 // PONTOS DE RISCO
 Route::get('/pontos-risco', [PontoRiscoController::class, 'index']);
