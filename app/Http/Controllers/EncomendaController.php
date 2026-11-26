@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
-class Encomenda extends Controller
+class EncomendaController extends Controller
 {
     public function store(Request $request)
     {
