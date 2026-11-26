@@ -210,6 +210,8 @@ class RotaController extends Controller
         $riscosEncontrados = [];
         $pontuacaoRisco = 0;
 
+        error_log('OLYMPE: iniciando analise de riscos. Coordenadas: ' . count($coordenadas) . ' | Pontos: ' . count($pontosRisco));
+
         foreach ($pontosRisco as $pontoRisco) {
 
             $ponto = [
@@ -240,6 +242,8 @@ class RotaController extends Controller
                 'nivel_risco' => $pontoRisco->nivel_risco,
                 'menor_distancia_metros' => round($menorDistancia, 2),
             ]);
+
+            error_log('OLYMPE: ponto ' . $pontoRisco->tipo . ' | distancia: ' . $menorDistancia . ' metros');
 
             if ($menorDistancia <= $raioSeguranca) {
 
