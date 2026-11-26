@@ -235,6 +235,12 @@ class RotaController extends Controller
                 }
             }
 
+            Log::info('Analise de ponto de risco', [
+                'tipo' => $pontoRisco->tipo,
+                'nivel_risco' => $pontoRisco->nivel_risco,
+                'menor_distancia_metros' => round($menorDistancia, 2),
+            ]);
+
             if ($menorDistancia <= $raioSeguranca) {
 
                 $nivel = (int) $pontoRisco->nivel_risco;
