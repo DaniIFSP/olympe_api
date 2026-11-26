@@ -22,7 +22,7 @@ class PontoRisco extends Model
         'descricao',
         'nivel_risco',
         'data_denuncia'
-
+        
     ];
 
     protected $casts = [
