@@ -206,7 +206,7 @@ class RotaController extends Controller
 
     private function analisarRiscosRota($coordenadas, $pontosRisco)
     {
-        $raioSeguranca = 50;
+        $raioSeguranca = 75;
         $riscosEncontrados = [];
         $pontuacaoRisco = 0;
 
